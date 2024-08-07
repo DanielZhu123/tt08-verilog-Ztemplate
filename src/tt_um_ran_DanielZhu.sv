@@ -66,35 +66,4 @@ endmodule
 
 
 
-module tt_um_ran_DanielZhu_tb;
-        logic clk_in;
-        logic rst_n_in;
-        logic startring_in;
-        logic pulse_in;
-	logic sample_in;
-        logic diplaychoose_in;
-	logic [13:0] displaypin_in;
 
-tt_um_ran_DanielZhu tt_um_ran_DanielZhu(
-        .clk(clk_in),
-        .rst_n(rst_n_in),
-        .startring(startring_in),
-        .pulse(pulse_in),
-	.sample(sample_in),
-        .diplaychoose(diplaychoose_in),
-	.displaypin(displaypin_in)
-);
-initial begin
-     clk_in=0;startring_in=0;rst_n_in=0;sample_in=0;diplaychoose_in=0;pulse_in=0;
-#40 rst_n_in=1;
-#40 rst_n_in=0;
-#40 startring_in=1;
-#100000 startring_in=1;
-#100000 $stop;
-end
-always #10 clk_in=~clk_in;
-always #300 sample_in=~sample_in;
-always #50 diplaychoose_in=~diplaychoose_in;
-
-
-endmodule

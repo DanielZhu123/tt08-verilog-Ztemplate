@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 `default_nettype none
 //4 inverter rings
 module tt_invring #(
@@ -91,20 +90,4 @@ module tt_invring #(
 endmodule 
 
 
-module tt_invring_tb;
-logic inverterringout_out;
-logic startring_in;
-logic clk_in;
 
-tt_invring tt_invring(
-.inverterringout(inverterringout_out),
-.startring(startring_in),
-.clk(clk_in)
-);
-initial begin
-     startring_in=0;clk_in=0;
-#30 startring_in=1;
-#10000 $stop;
-end
-always #10 clk_in=~clk_in;
-endmodule

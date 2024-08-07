@@ -3,7 +3,7 @@ project:
   title:        "Dice"      # Project title
   author:       "ZHU QUANHAO"      # Your name
   discord:      "zhuquanhao"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
-  description:  "after you press the button， the system will generate a random number from 1-6"      # One line description of what your project does
+  description:  "after you press the button， the system will generate a random number from 0-F"      # One line description of what your project does
   language:     "SystemVerilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
   clock_hz:     50M       # Clock frequency in Hz (or 0 if not applicable)
 
@@ -11,13 +11,23 @@ project:
   tiles: "1x1"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 6x2 or 8x2
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
-  top_module:  "tt_um_example"
+  top_module:  "tt_um_ran_DanielZhu"
 
   # List your project's source files here.
   # Source files must be in ./src and you must list each source file separately, one per line.
   # Don't forget to also update `PROJECT_SOURCES` in test/Makefile.
   source_files:
-    - "project.v"
+    - "tt_um_ran_DanielZhu.sv" 
+        - "tt_samplekey.sv" 
+            - "tt_process.sv" 
+                - "tt_multblock.sv" 
+                    - "tt_mult.sv" 
+                       - "tt_invring.sv" 
+       - "tt_inv.sv" 
+        - "tt_finalprocess.sv" 
+        -"tt_display"
+        -"tt_16bitran"
+        -"tt_13n"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:

@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 `default_nettype none
 //13 flipflop in series and all output of the flipflop do xor gate
 module tt_13n #(
@@ -43,24 +42,3 @@ module tt_13n #(
 endmodule 
 
 
-module tt_13n_tb;
-logic  ran13nout_out;
-logic clk_in;
-logic num_in;
-logic rst_n_in;
-
-tt_13n tt_13n(
-.ran13nout(ran13nout_out),
-.clk(clk_in),
-.num(num_in),
-.rst_n(rst_n_in)
-);
-initial begin
-     clk_in=0;num_in=0;rst_n_in=0;
-#40 rst_n_in=1;
-#20 rst_n_in=0;
-#1000 $stop;
-end
-always #10 clk_in=~clk_in;
-always #30 num_in=~num_in;
-endmodule

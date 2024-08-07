@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 `default_nettype none
 module tt_multblock #(
 	parameter integer mult_len =12)
@@ -37,7 +36,8 @@ module tt_multblock #(
         assign key[0]=key_4[0];
         assign key[1]=key_4[0];
         assign key[2]=key_4[0];
-        assign key[3]=key_4[1];        assign key[4]=key_4[1];
+        assign key[3]=key_4[1];
+        assign key[4]=key_4[1];
         assign key[5]=key_4[1];
         assign key[6]=key_4[2];
         assign key[7]=key_4[2];
@@ -63,22 +63,3 @@ module tt_multblock #(
        
 endmodule 
 
-
-module tt_multblock_tb;
-logic pulse_in;
-
-logic [3:0] key_4_in;
-logic multblockout_out;
-
-tt_multblock tt_multblock(
-.pulse(pulse_in),
-
-.key_4(key_4_in),
-.multblockout(multblockout_out)
-);
-initial begin
-     pulse_in=0;key_4_in=0;
-#300 key_4_in=1;
-#30000 $stop;
-end
-endmodule

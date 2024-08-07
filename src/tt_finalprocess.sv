@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 `default_nettype none
 module tt_finalprocess #(
 	parameter integer multblock_len =4)
@@ -54,25 +53,3 @@ tt_display tt_display(
 endmodule 
 
 
-module tt_finalprocess_tb;
-logic pulse_in;
-logic switchAB_in;
-logic [3:0] key_4_in;
-logic [13:0] disppinout_out;
-
-
-
-
-tt_finalprocess tt_finalprocess(
-.pulse(pulse_in),
-.switchAB(switchAB_in),
-.key_4(key_4_in),
-.disppinout(disppinout_out)
-);
-initial begin
-     pulse_in=0;switchAB_in=0;key_4_in=0;
-#300 key_4_in=1;
-#30000 $stop;
-end
-always #30 switchAB_in=~switchAB_in;
-endmodule

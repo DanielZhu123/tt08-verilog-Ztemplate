@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 `default_nettype none
 module tt_samplekey
 (
@@ -30,30 +29,3 @@ module tt_samplekey
 
 endmodule 
 
-
-module tt_samplekey_tb;
-logic  [3:0] samplednum_out;
-logic clk_in;
-logic num_in;
-logic sample_in;
-
-
-tt_samplekey tt_samplekey(
-.samplednum(samplednum_out),
-.clk(clk_in),
-.num(num_in),
-.sample(sample_in)
-);
-initial begin
-     clk_in=0;num_in=0;sample_in=0;
-
-
-#1000 $stop;
-end
-always #10 clk_in=~clk_in;
-always #30 num_in=~num_in;
-always #100 sample_in=~sample_in;
-
-
-
-endmodule

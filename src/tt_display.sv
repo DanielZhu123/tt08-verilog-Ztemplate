@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 `default_nettype none
 //for LED display
 module tt_display(
@@ -53,21 +52,3 @@ module tt_display(
 endmodule
 
 
-module tt_display_tb;
-logic [13:0]displaypin_out;
-logic [3:0] number1_in;
-logic [3:0] number2_in;
-
-tt_display tt_display(
-.displaypin(displaypin_out),
-.number1(number1_in),
-.number2(number2_in)
-);
-initial begin
-     number1_in=0;number2_in=0;
-
-#10000 $stop;
-end
-always #10 number1_in=number1_in+1;
-always #10 number2_in=number2_in+1;
-endmodule

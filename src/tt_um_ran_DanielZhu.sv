@@ -17,12 +17,12 @@ module tt_um_ran_DanielZhu (
   assign ui_in[1] =pulse; 
   assign ui_in[2] =sample ; 
   assign ui_in[3] =diplaychoose ; 
-  assign uo_[7:4]= 4'b0000;
-  assign uio_out = 0;
+  assign uo_out[6:0]= displaypin[6:0];
+  assign uo_out[7]=inverterringout;
+  assign uio_out[6:0] = displaypin[13:7];
+  assign uio_out[7] =ranbitstring ;	
   assign uio_oe  = 8'b11111111;
 
-  // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
 
 
 

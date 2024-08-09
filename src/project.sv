@@ -24,14 +24,6 @@ logic sample;
 logic diplaychoose;
 logic [13:0] displaypin;
 
-	assign ui_in[0]=startring;
-	assign ui_in[1]=pulse;
-	assign ui_in[2]=sample;
-	assign ui_in[3]=diplaychoose;
-	assign uo_out[6:0]=displaypin[6:0];
-	assign uio_out[6:0]=displaypin[13:7];
-	assign ui0_oe[7:0]=8b'11111111;
-	
 
 logic inverterringout;
 logic ranprocessout;
@@ -39,7 +31,16 @@ logic ran16out;
 logic ranbitstring;
 logic [3:0] samplednum;
 
-
+	assign ui_in[0]=startring;
+	assign ui_in[1]=pulse;
+	assign ui_in[2]=sample;
+	assign ui_in[3]=diplaychoose;
+	assign uo_out[6:0]=displaypin[6:0];
+	assign uo_out[7]=ranbitstring;
+	assign uio_out[6:0]=displaypin[13:7];
+	assign uio_out[7]=inverterringout;	
+	assign ui0_oe[7:0]=8'b11111111;
+	
 
 tt_invring tt_invring(
 		.clk(clk),

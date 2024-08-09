@@ -57,9 +57,8 @@ module tt_um_ran_DanielZhu (
 		.rst_n(rst_n),
         .ran16out(ran16out));
 
-	always_comb begin :
+	always@(*)
 		ranbitstring = ran16out^ranprocessout;
-	end
 	
 
 	tt_samplekey tt_samplekey(

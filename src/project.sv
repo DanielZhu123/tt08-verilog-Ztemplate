@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_example (
+module tt_um_ran_DanielZhu (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -18,18 +18,20 @@ module tt_um_example (
 
 
 
-  // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+logic startring;
+logic pulse;
+logic sample;
+logic diplaychoose;
+logic [13:0] displaypin;
 
-
-
-        logic startring;
-        logic pulse;
-	logic sample;
-        logic diplaychoose;
-    logic [13:0] displaypin;
-
-
+	assign ui_in[0]=startring;
+	assign ui_in[1]=pulse;
+	assign ui_in[2]=sample;
+	assign ui_in[3]=diplaychoose;
+	assign uo_out[6:0]=displaypin[6:0];
+	assign uio_out[6:0]=displaypin[13:7];
+	assign ui0_oe[7:0]=8b'11111111;
+	
 
 logic inverterringout;
 logic ranprocessout;

@@ -31,10 +31,10 @@ logic ran16out;
 logic ranbitstring;
 logic [3:0] samplednum;
 
-	assign ui_in[0]=startring;
-	assign ui_in[1]=pulse;
-	assign ui_in[2]=sample;
-	assign ui_in[3]=diplaychoose;
+	assign startring=ui_in[0];
+	assign pulse=ui_in[1];
+	assign sample=ui_in[2];
+	assign diplaychoose=ui_in[3];
 	assign uo_out[6:0]=displaypin[6:0];
 	assign uo_out[7]=ranbitstring;
 	assign uio_out[6:0]=displaypin[13:7];

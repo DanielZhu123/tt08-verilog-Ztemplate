@@ -519,8 +519,8 @@ module tt_process (
     end
 
  
-    always@(posedge clk or posedge rst_n) begin//generate half clk frequency
-  		if (rst_n==1) begin
+    always@(posedge clk) begin//generate half clk frequency
+	    if (rst_n==0) begin
   			clk_half <= 0;
             end
  		else

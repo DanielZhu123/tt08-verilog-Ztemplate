@@ -284,7 +284,7 @@ module tt_13n #(
 	output wire ran13nout);
 
 	logic [count:0] connection;//all of the wire required in the connection
-	always@(posedge clk or negedge rst_n )begin//pass down bit each clk 
+	always@(posedge clk)begin//pass down bit each clk 
 		if (rst_n==0) begin
 			connection[13:1]<=0;
 		end
@@ -328,7 +328,7 @@ module tt_16bitran #(
     assign ran16out =connection[0];
 
 
-	always@(posedge clk or negedge rst_n)begin//pass down bit each clk 
+	always@(posedge clk)begin//pass down bit each clk 
 		if (rst_n==0) begin
 			connection[16]<=connection[15];
 			connection[15]<=connection[14];

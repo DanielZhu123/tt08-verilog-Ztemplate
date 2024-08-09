@@ -123,7 +123,7 @@ module tt_invring #(
 	genvar i;
 	generate
 		//4 Oscillator
-		for (i = 0; i < OSC_LEN_1; i = i + 1) begin: ringosc1
+		for (i = 0; i < OSC_LEN_1; i = i + 1) begin: gen_ringosc1
 			wire y;
 			if (i == 0)
 				assign y = startring? osc_1[OSC_LEN_1 - 1]:0;//if start is off,the ring will not connect its head and tail
@@ -136,7 +136,7 @@ module tt_invring #(
 			);
 		end
 
-		for (i = 0; i < OSC_LEN_2; i = i + 1) begin: ringosc2
+		for (i = 0; i < OSC_LEN_2; i = i + 1) begin: gen_ringosc2
 			wire y;
 			if (i == 0)
 				assign y = startring? osc_2[OSC_LEN_2 - 1]:0;
@@ -149,7 +149,7 @@ module tt_invring #(
 			);
 		end
 
-		for (i = 0; i < OSC_LEN_3; i = i + 1) begin: ringosc3
+		for (i = 0; i < OSC_LEN_3; i = i + 1) begin: gen_ringosc3
 			wire y;
 			if (i == 0)
 				assign y = startring? osc_3[OSC_LEN_3 - 1]:0;
@@ -162,7 +162,7 @@ module tt_invring #(
 			);
 		end
 
-		for (i = 0; i < OSC_LEN_4; i = i + 1) begin: ringosc4
+		for (i = 0; i < OSC_LEN_4; i = i + 1) begin: gen_ringosc4
 			wire y;
 			if (i == 0)
 				assign y = startring? osc_4[OSC_LEN_4 - 1]:0;

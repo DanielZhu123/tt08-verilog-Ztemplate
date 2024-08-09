@@ -30,6 +30,8 @@ module tt_um_ran_DanielZhu (
 	logic ranbitstring;
 	logic [3:0] samplednum;
 
+	wire _unused = &{ena, uio_in,ui_in[7:4], 1'b0};
+
 	assign startring=ui_in[0];
 	assign pulse=ui_in[1];
 	assign sample=ui_in[2];
@@ -118,7 +120,7 @@ module tt_invring #(
 			if (i == 0)begin:gen_1
 				assign y = startring? osc_1[OSC_LEN_1 - 1]:0;//if start is off,the ring will not connect its head and tail
 			end
-			else begin
+			else begin:gen_11
 				assign y = osc_1[i - 1];
 			end
 			tt_inv inv (
@@ -131,7 +133,7 @@ module tt_invring #(
 			if (i == 0)begin:gen_2
 				assign y = startring? osc_2[OSC_LEN_2 - 1]:0;
 			end
-			else begin
+			else begin:gen_22
 				assign y = osc_2[i - 1];
 			end
 			tt_inv inv (
@@ -144,7 +146,7 @@ module tt_invring #(
 			if (i == 0)begin:gen_3
 				assign y = startring? osc_3[OSC_LEN_3 - 1]:0;
 			end
-			else begin
+			else begin:gen_33
 				assign y = osc_3[i - 1];
 			end
 			tt_inv inv (
@@ -157,7 +159,7 @@ module tt_invring #(
 			if (i == 0)begin:gen_4
 				assign y = startring? osc_4[OSC_LEN_4 - 1]:0;
 			end
-			else begin
+			else begin:gen_44
 				assign y = osc_4[i - 1];
 			end
 			tt_inv inv (
@@ -282,7 +284,6 @@ module tt_13n #(
 	output wire ran13nout);
 
 	logic [count:0] connection;//all of the wire required in the connection
-	assign connection[0]=num;
 	always@(posedge clk)begin//pass down bit each clk 
 		connection[13]<=connection[12];
 		connection[12]<=connection[11];
@@ -297,6 +298,7 @@ module tt_13n #(
 		connection[3]<=connection[2];
 		connection[2]<=connection[1];
 		connection[1]<=connection[0];
+	        connection[0]<=num;
 	end
         
     always@(posedge rst_n)begin//reset all to 0
@@ -436,10 +438,8 @@ endmodule
 
 
 
-module tt_finalprocess #(
-	parameter integer multblock_len =4)
-	
-	(input wire pulse,
+module tt_finalprocess (
+	input wire pulse,
     input  wire switchAB,
 	input wire [3:0] key_4,
 	output wire [13:0] disppinout);

@@ -39,7 +39,7 @@ logic [3:0] samplednum;
 	assign uo_out[7]=ranbitstring;
 	assign uio_out[6:0]=displaypin[13:7];
 	assign uio_out[7]=inverterringout;	
-	assign ui0_oe[7:0]=8'b11111111;
+	assign uio_oe[7:0]=8'b11111111;
 	
 
 tt_invring tt_invring(

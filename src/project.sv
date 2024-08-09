@@ -343,13 +343,14 @@ module tt_16bitran #(
 		connection[3]<=connection[2];
 		connection[2]<=connection[1];
 		connection[1]<=connection[0];
+		connection[0]<=connection[4]^^connection[13]^^connection[15]^^connection[16];
 	end
         
     always@(posedge rst_n)begin//reset all to 0000_0000_0000_0001
 		connection[16:1]<=16'b1;
 	end
 
-    assign connection[0] = connection[4]^^connection[13]^^connection[15]^^connection[16];
+
 
 	
 endmodule 

@@ -29,7 +29,6 @@ module tt_um_ran_DanielZhu (
 	
 
 	tt_invring tt_invring(
-		.clk(clk),
 		.startring(startring),
         .inverterringout(inverterringout));
 
@@ -55,8 +54,7 @@ endmodule
 module tt_invring #(
 	parameter integer OSC_LEN = 11)
 	
-	(input wire clk,
-	input wire startring,//rings oscillate,else rings stop oscillate
+	(input wire startring,//rings oscillate,else rings stop oscillate
 	output wire inverterringout);//generate random bit string
 	wire [OSC_LEN-1:0] osc;
     assign inverterringout=osc[OSC_LEN - 1];

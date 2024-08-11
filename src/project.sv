@@ -69,11 +69,6 @@ module tt_um_ran_DanielZhu (
 		.num(ranbitstring),
 		.samplednum(samplednum));
 
-	tt_finalprocess tt_finalprocess(
-		.pulse(pulse),
-		.switchAB(diplaychoose),
-		.key_4(samplednum),
-		.disppinout(displaypin));
 
 
 endmodule 

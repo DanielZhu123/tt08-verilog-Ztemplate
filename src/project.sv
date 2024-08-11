@@ -80,15 +80,18 @@ endmodule
 
 
 
-module tt_inv //single inverter delay 
-	(input  wire a,
-    output wire y);
 
-	assign y=~a;
+module tt_inv (
+	input  wire a,
+  output wire y
+);
 
-endmodule 
+  sky130_fd_sc_hd__inv_2 cnt_bit_I (
+    .A     (a),
+    .Y     (y)
+  );
 
-
+endmodule // tt_prim_inv
 
 module tt_invring #(
 	parameter integer OSC_LEN_1 = 11,//length of each inverter
@@ -284,7 +287,7 @@ module tt_13n #(
 	output wire ran13nout);
 
 	logic [count:0] connection;//all of the wire required in the connection
-	always@(posedge clk)begin//pass down bit each clk 
+	always@(posedge clk or negedge rst_n )begin//pass down bit each clk 
 		if (rst_n==0) begin
 			connection[13:1]<=0;
 		end
@@ -328,7 +331,7 @@ module tt_16bitran #(
     assign ran16out =connection[0];
 
 
-	always@(posedge clk)begin//pass down bit each clk 
+	always@(posedge clk or negedge rst_n)begin//pass down bit each clk 
 		if (rst_n==0) begin
 			connection[16]<=connection[15];
 			connection[15]<=connection[14];
@@ -519,8 +522,8 @@ module tt_process (
     end
 
  
-    always@(posedge clk) begin//generate half clk frequency
-	    if (rst_n==0) begin
+    always@(posedge clk or posedge rst_n) begin//generate half clk frequency
+  		if (rst_n==1) begin
   			clk_half <= 0;
             end
  		else

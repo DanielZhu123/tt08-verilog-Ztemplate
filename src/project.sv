@@ -70,7 +70,7 @@ module tt_invring #(
 			else
 				assign y = osc[i - 1];
 			
-			tt_inv inv (
+			tt_prim_inv inv (
 				.a (y),
 				.y (osc[i])
 			);

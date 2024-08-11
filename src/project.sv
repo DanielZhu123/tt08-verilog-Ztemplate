@@ -19,18 +19,23 @@ module tt_um_ran_DanielZhu (
 
 	logic startring;
     logic inverterringout;
+	logic ran;
 
 
 	wire _unused = &{ena, uio_in,ui_in[7:1], uio_out, uo_out[7:1], 1'b0};
 
 	assign startring=ui_in[0];
-	assign uo_out[0]=inverterringout;	
+	assign uo_out[0]=ran;	
 	assign uio_oe[7:0]=8'b11111111;
 	
 
 	tt_invring tt_invring(
 		.startring(startring),
         .inverterringout(inverterringout));
+
+	always@(posedge clk)begin
+		ran<=inverterringout;
+	end
 
 endmodule 
 

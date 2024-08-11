@@ -47,7 +47,7 @@ module tt_prim_inv (
     .Y     (y)
   );
 
-endmodule 
+endmodule // tt_prim_inv
 
 
 

@@ -25,12 +25,16 @@ module tt_um_ran_DanielZhu (
 
     logic ranbitstring;
 
+    logic sample;
+    logic [3:0] samplednum;
+
+
 
 	wire _unused = &{ena, uio_in,ui_in[7:1],1'b0};
 	assign uio_out=0;
-	assign uo_out[7:1] =0;
+	assign uo_out[7:4] =0;
 	assign startring=ui_in[0];
-	assign uo_out[0]=ranbitstring;	
+	assign uo_out[3:0]=samplednum;	
 	assign uio_oe[7:0]=8'b11111111;
 	
 
@@ -53,6 +57,16 @@ module tt_um_ran_DanielZhu (
 
 	always@(*)
 		ranbitstring = ran16out^ranprocessout;
+
+
+	tt_samplekey tt_samplekey(
+		.clk(clk),
+        .rst_n(rst_n)
+		.sample(sample),
+		.num(ranbitstring),
+		.samplednum(samplednum));
+
+
 endmodule 
 
 
@@ -302,4 +316,44 @@ module tt_16bitran #(
 
 
 	
+endmodule 
+
+
+
+module tt_samplekey(
+    input wire clk,
+    input wire sample,
+    input wire num,
+	input wire rst_n,
+	output wire [3:0] samplednum);
+
+
+	logic [3:0] bitsadjacent;
+	logic [3:0] sample_4;
+
+        
+	assign samplednum=sample_4;
+
+
+    always @(posedge clk)begin
+		if (rst_n==0) begin
+			bitsadjacent[0]<=0;
+    		bitsadjacent[1]<=0;
+			bitsadjacent[2]<=0;
+			bitsadjacent[3]<=0;
+		end
+		else begin
+			bitsadjacent[0]<=num;
+    		bitsadjacent[1]<=bitsadjacent[0];
+			bitsadjacent[2]<=bitsadjacent[1];
+			bitsadjacent[3]<=bitsadjacent[2];
+		end
+
+    end
+
+	always @(posedge sample)begin
+		sample_4<={bitsadjacent[3],bitsadjacent[2],bitsadjacent[1],bitsadjacent[0]};
+ 	end
+
+
 endmodule 

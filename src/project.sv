@@ -28,30 +28,38 @@ module tt_um_ran_DanielZhu (
     logic sample;
     logic [3:0] samplednum;
 
+    logic pulse;
+    logic diplaychoose;
+    logic [13:0]displaypin;
+
+
+
 
 
 	wire _unused = &{ena, uio_in,ui_in[7:2],1'b0};
-	assign uio_out=0;
-	assign uo_out[7:4] =0;
+
+	assign uo_out[7] =0;	
+    assign uo_out[6:0]=displaypin[6:0];	
 	assign startring=ui_in[0];
     assign sample=ui_in[1];
-	assign uo_out[3:0]=samplednum;	
+	assign uio_out[7] =0;	
+    assign uio_out[6:0]=displaypin[13:7];	
 	assign uio_oe[7:0]=8'b11111111;
 	
 
-	tt_invring tt_invring(
+	tt_invring invring(
         .clk(clk),
 		.startring(startring),
         .inverterringout(inverterringout),
         .rst_n(rst_n));
 
-	tt_process tt_process(
+	tt_process process(
 		.clk(clk),
 		.rst_n(rst_n),
         .num(inverterringout),
 		.ranprocessout(ranprocessout));
 
-	tt_16bitran tt_16bitran(
+	tt_16bitran a16bitran(
 		.clk(clk),
 		.rst_n(rst_n),
         .ran16out(ran16out));
@@ -60,13 +68,18 @@ module tt_um_ran_DanielZhu (
 		ranbitstring = ran16out^ranprocessout;
 
 
-	tt_samplekey tt_samplekey(
+	tt_samplekey samplekey(
 		.clk(clk),
 		.rst_n(rst_n),
 		.sample(sample),
 		.num(ranbitstring),
 		.samplednum(samplednum));
 
+	tt_finalprocess tt_finalprocess(
+		.pulse(pulse),
+		.switchAB(diplaychoose),
+		.key_4(samplednum),
+		.disppinout(displaypin));
 
 endmodule 
 
@@ -356,5 +369,202 @@ module tt_samplekey(
 		sample_4<={bitsadjacent[3],bitsadjacent[2],bitsadjacent[1],bitsadjacent[0]};
  	end
 
+
+endmodule 
+
+module tt_mult(
+	input  wire sel,
+	input  wire A,
+	input  wire B,
+	output wire out);
+
+	sky130_fd_sc_hd__mux2_1 cell0_I (
+        `ifdef WITH_POWER
+		    .VPWR (1'b1),
+		    .VGND (1'b0),
+		    .VPB  (1'b1),
+		    .VNB  (1'b0),
+        `endif
+		    .S      (sel),
+	    	.A0    (A),
+	    	.A1     (B),
+	    	.X      (out),);
+endmodule
+
+module tt_mult_22 (
+	input  wire a,
+	input  wire b,
+	input  wire key,
+    output wire c,
+    output wire d);
+
+    tt_mult mult(
+        .A(a),
+        .B(b),
+        .sel(key),
+        .out(c));
+
+    tt_mult mult(
+        .A(b),
+        .B(a),
+        .sel(key),
+        .out(d));
+
+endmodule 
+
+module tt_multblock #(
+	parameter integer mult_len =12)
+	
+	(input wire pulse,
+	input wire [3:0] key_4,
+	output wire multblockout);
+
+	wire [mult_len:0] A;//A B are wire to connect the switch
+	wire [mult_len:0] B;
+	wire [mult_len-1:0] key;
+	logic [1:0]anda;
+	logic andaout;
+	logic [1:0]andb;
+	logic andbout;
+
+	assign A[0]=pulse;
+	assign B[0]=pulse;
+
+	
+	genvar i;
+	generate
+		//4 Oscillator
+		for (i = 0; i < mult_len; i = i + 1) begin
+			tt_mult_22 mult_22(
+				.a (A[i]),
+				.b (B[i]),
+ 				.c(A[i+1]),
+				.d(B[i+1]),
+				.key(key[i]));
+		end
+       
+	endgenerate
+
+    assign key[0]=key_4[0];
+    assign key[1]=key_4[0];
+    assign key[2]=key_4[0];
+    assign key[3]=key_4[1];
+    assign key[4]=key_4[1];
+    assign key[5]=key_4[1];
+    assign key[6]=key_4[2];
+    assign key[7]=key_4[2];
+    assign key[8]=key_4[2];
+    assign key[9]=key_4[3];
+    assign key[10]=key_4[3];
+    assign key[11]=key_4[3];
+	assign anda[0]=A[12];
+	assign andb[0]=B[12];
+	assign anda[1]=andbout;
+	assign andb[1]=andaout;
+	assign multblockout=andaout;
+
+        
+	always_comb begin
+        andaout=~(anda[0]&anda[1]);
+        andbout=~(andb[0]&andb[1]);
+	end
+
+
+	
+	
+       
+endmodule 
+
+module tt_display(
+    input wire [3:0] number1,
+    input wire [3:0] number2,
+	output wire [13:0] displaypin);
+
+	logic [6:0] nub1dis;
+	logic [6:0] nub2dis;
+    assign displaypin={nub2dis,nub1dis};
+	always_comb begin     
+		case(number1)
+			4'h0:nub1dis[6:0]=7'b0000001;
+			4'h1:nub1dis[6:0]=7'b0110000;
+			4'h2:nub1dis[6:0]=7'b1101101;
+			4'h3:nub1dis[6:0]=7'b1111001;
+			4'h4:nub1dis[6:0]=7'b0110011;
+			4'h5:nub1dis[6:0]=7'b1011011;
+			4'h6:nub1dis[6:0]=7'b1011111;
+			4'h7:nub1dis[6:0]=7'b1110000; 
+			4'h8:nub1dis[6:0]=7'b1111111;
+			4'h9:nub1dis[6:0]=7'b1111011;
+			4'ha:nub1dis[6:0]=7'b1110111;
+			4'hb:nub1dis[6:0]=7'b0011111;
+			4'hc:nub1dis[6:0]=7'b1001110;     
+			4'hd:nub1dis[6:0]=7'b0111101;
+			4'he:nub1dis[6:0]=7'b1001111;
+			4'hf:nub1dis[6:0]=7'b1000111;             
+			default:nub1dis[6:0]=7'b0000000;
+		endcase
+		case(number2)
+			4'h0:nub2dis[6:0]=7'b0000001;
+			4'h1:nub2dis[6:0]=7'b0110000;
+			4'h2:nub2dis[6:0]=7'b1101101;
+			4'h3:nub2dis[6:0]=7'b1111001;
+			4'h4:nub2dis[6:0]=7'b0110011;
+			4'h5:nub2dis[6:0]=7'b1011011;
+			4'h6:nub2dis[6:0]=7'b1011111;
+			4'h7:nub2dis[6:0]=7'b1110000; 
+			4'h8:nub2dis[6:0]=7'b1111111;
+			4'h9:nub2dis[6:0]=7'b1111011;
+			4'ha:nub2dis[6:0]=7'b1110111;
+			4'hb:nub2dis[6:0]=7'b0011111;
+			4'hc:nub2dis[6:0]=7'b1001110;     
+			4'hd:nub2dis[6:0]=7'b0111101;
+			4'he:nub2dis[6:0]=7'b1001111;
+			4'hf:nub2dis[6:0]=7'b1000111;             
+			default:nub2dis[6:0]=7'b0000000;
+		endcase
+	end
+endmodule
+
+module tt_finalprocess (
+	input wire pulse,
+    input  wire switchAB,
+	input wire [3:0] key_4,
+	output wire [13:0] disppinout);
+
+	logic [3:0] multblockA;
+	logic [3:0] multblockB;
+
+	logic [3:0] num1;
+	logic [3:0] num2;
+
+	logic [7:0]multblockout;
+	
+	assign num1=key_4;
+
+	genvar i;
+	generate
+		for (i = 0; i < 8; i = i + 1) begin
+			tt_multblock multblock(
+				.pulse(pulse),
+				.key_4(key_4),
+				.multblockout(multblockout[i]));
+		end
+       
+	endgenerate
+
+    assign multblockA={multblockout[3],multblockout[2],multblockout[1],multblockout[0]};
+    assign multblockB={multblockout[7],multblockout[6],multblockout[5],multblockout[4]};
+
+	always_comb begin
+        if(switchAB==1)
+			num2=multblockA;
+		else
+			num2=multblockB;
+	end
+
+	tt_display tt_display(
+		.number1(num1),
+		.number2(num2),
+		.displaypin(disppinout));
 
 endmodule 

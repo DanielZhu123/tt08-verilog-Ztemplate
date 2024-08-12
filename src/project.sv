@@ -93,6 +93,52 @@ module tt_mult_22 (
 
 endmodule 
 
+module nand_gate (
+    input wire A,
+    input wire B,
+    output wire out);
+
+    sky130_fd_sc_hd__nand2 cell_nand (
+        .A(A),
+        .B(B),
+        .Y(out));
+
+endmodule
+
+module nand_gate_2 (
+    input wire AA,
+    input wire BB,
+    output wire outt);
+
+    logic A_1;
+    logic B_1;
+    logic A_2;
+    logic B_2;
+    logic out_1;
+    logic out_2;
+
+    assign AA=A_1 ;
+    assign out_2=B_1 ;
+    assign BB=B_2;
+    assign out_1=A_2;
+
+    assign outt=out_1;
+
+    generate
+        nand_gate nand_gate1(
+            .A(A_1),
+            .B(B_1),
+            .out(out_1));
+        
+        nand_gate nand_gate2(
+            .A(A_2),
+            .B(B_2),
+            .out(out_2));
+        
+    endgenerate
+
+
+endmodule
 
 module tt_multblock #(
 	parameter integer mult_len =12)
@@ -104,10 +150,7 @@ module tt_multblock #(
 	wire [mult_len:0] A;//A B are wire to connect the switch
 	wire [mult_len:0] B;
 	wire [mult_len-1:0] key;
-	logic [1:0]anda;
-	logic andaout;
-	logic [1:0]andb;
-	logic andbout;
+
 
 	assign A[0]=pulse;
 	assign B[0]=pulse;
@@ -139,20 +182,12 @@ module tt_multblock #(
     assign key[9]=key_4[3];
     assign key[10]=key_4[3];
     assign key[11]=key_4[3];
-	assign anda[0]=A[12];
-	assign andb[0]=B[12];
-	assign anda[1]=andbout;
-	assign andb[1]=andaout;
-	assign multblockout=andaout;
 
-        
-	always_comb begin
-        andaout=~(anda[0]&anda[1]);
-        andbout=~(andb[0]&andb[1]);
-	end
+    nand_gate_2 nand_gate_2(
+        .AA(A[12]),
+        .BB(B[12]),
+        .outt(multblockout));
 
 
-	
-	
        
 endmodule 

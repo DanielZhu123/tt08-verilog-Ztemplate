@@ -2,7 +2,6 @@
  * Copyright (c) 2024 Your Name
  * SPDX-License-Identifier: Apache-2.0
  */
-
 `default_nettype none
 
 module tt_um_ran_DanielZhu (
@@ -34,7 +33,8 @@ module tt_um_ran_DanielZhu (
 	tt_invring tt_invring(
         .clk(clk),
 		.startring(startring),
-        .inverterringout(inverterringout));
+        .inverterringout(inverterringout),
+        .rst_n(rst_n));
 
 	tt_process tt_process(
 		.clk(clk),
@@ -63,6 +63,7 @@ module tt_invring #(
     parameter integer OSC_LEN_4 = 29)
 	
 	(input wire clk,
+	input wire rst_n,
 	input wire startring,//rings oscillate,else rings stop oscillate
 	output wire inverterringout);//generate random bit string
 
@@ -136,10 +137,19 @@ module tt_invring #(
 	endgenerate
 
     always @(posedge clk)begin//sample ringout each clk cycle
-        ringoutsam[0]<=ringout[0];
-		ringoutsam[1]<=ringout[1];
-		ringoutsam[2]<=ringout[2];
-		ringoutsam[3]<=ringout[3];
+        if (rst_n==0) begin
+            ringoutsam[0]<=0;
+		    ringoutsam[1]<=0;
+		    ringoutsam[2]<=0;
+		    ringoutsam[3]<=0;
+        end
+        else begin
+            ringoutsam[0]<=ringout[0];
+		    ringoutsam[1]<=ringout[1];
+		    ringoutsam[2]<=ringout[2];
+		    ringoutsam[3]<=ringout[3]; 
+        end
+
 	end
     always_comb
         rannum= ringoutsam[0]^^ringoutsam[1]^^ringoutsam[2]^^ringoutsam[3];//create random number by xor
@@ -208,6 +218,11 @@ module tt_process (
         .ran13nout(bitaft13n));
 
     always @(posedge clk)begin//prepare for grouping
+    if (rst_n==0) begin
+        bitsadjacent[0]<=0;
+        bitsadjacent[1]<=0;
+		bitsadjacent[2]<=0;
+    end
 		bitsadjacent[0]<=num;
         bitsadjacent[1]<=bitsadjacent[0];
 		bitsadjacent[2]<=bitsadjacent[1];
@@ -215,7 +230,7 @@ module tt_process (
 
  
     always@(posedge clk) begin//generate half clk frequency
-  		if (rst_n==1) begin
+  		if (rst_n==0) begin
   			clk_half <= 0;
             end
  		else

@@ -47,19 +47,19 @@ module tt_um_ran_DanielZhu (
 	assign uio_oe[7:0]=8'b11111111;
 	
 
-	tt_invring invring(
+	tt_invring tt_invring(
         .clk(clk),
 		.startring(startring),
         .inverterringout(inverterringout),
         .rst_n(rst_n));
 
-	tt_process process(
+	tt_process tt_process(
 		.clk(clk),
 		.rst_n(rst_n),
         .num(inverterringout),
 		.ranprocessout(ranprocessout));
 
-	tt_16bitran a16bitran(
+	tt_16bitran tt_16bitran(
 		.clk(clk),
 		.rst_n(rst_n),
         .ran16out(ran16out));
@@ -68,7 +68,7 @@ module tt_um_ran_DanielZhu (
 		ranbitstring = ran16out^ranprocessout;
 
 
-	tt_samplekey samplekey(
+	tt_samplekey tt_samplekey(
 		.clk(clk),
 		.rst_n(rst_n),
 		.sample(sample),
@@ -388,7 +388,7 @@ module tt_mult(
 		    .S      (sel),
 	    	.A0    (A),
 	    	.A1     (B),
-	    	.X      (out));
+	    	.X      (out),);
 endmodule
 
 module tt_mult_22 (
@@ -398,13 +398,13 @@ module tt_mult_22 (
     output wire c,
     output wire d);
 
-    tt_mult mult1(
+    tt_mult mult(
         .A(a),
         .B(b),
         .sel(key),
         .out(c));
 
-    tt_mult mult2(
+    tt_mult mult(
         .A(b),
         .B(a),
         .sel(key),

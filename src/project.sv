@@ -61,7 +61,7 @@ module tt_um_ran_DanielZhu (
 
 	tt_samplekey tt_samplekey(
 		.clk(clk),
-        .rst_n(rst_n)
+		.rst_n(rst_n),
 		.sample(sample),
 		.num(ranbitstring),
 		.samplednum(samplednum));

@@ -40,7 +40,7 @@ module tt_um_ran_DanielZhu (
     assign uo_out[7:2]=0;	
 	assign uio_oe[7:0]=8'b11111111;
 	
-    tt_multblock tt_multblock(
+    tt_mult_22 tt_mult_22(
         .a(a),
         .b(b),
         .c(c),

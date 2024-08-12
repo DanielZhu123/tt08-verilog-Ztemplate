@@ -42,6 +42,8 @@ module tt_um_ran_DanielZhu (
     assign uo_out[6:0]=displaypin[6:0];	
 	assign startring=ui_in[0];
     assign sample=ui_in[1];
+    assign pulse=ui_in[2];
+    assign diplaychoose=ui_in[3];
 	assign uio_out[7] =0;	
     assign uio_out[6:0]=displaypin[13:7];	
 	assign uio_oe[7:0]=8'b11111111;

@@ -273,8 +273,8 @@ module tt_16bitran #(
     assign ran16out =connection[0];
 
 
-	always@(posedge clk or negedge rst_n)begin//pass down bit each clk 
-		if (rst_n==0) begin
+	always@(posedge clk)begin//pass down bit each clk 
+		if (rst_n==1) begin
 			connection[16]<=connection[15];
 			connection[15]<=connection[14];
 			connection[14]<=connection[13];

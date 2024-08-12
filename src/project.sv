@@ -31,6 +31,7 @@ module tt_um_ran_DanielZhu (
 	
 
 	tt_invring tt_invring(
+        .clk(clk),
 		.startring(startring),
         .inverterringout(inverterringout));
 
@@ -43,15 +44,15 @@ endmodule
 
 
 
-module tt_inv (
-	input  wire a,
-    output wire y);
+module tt_inv #(
+	parameter real INV_DELAY_NS = 0.07) //single inverter delay 
+	
+	(input  wire a,
+         output wire y);
 
-    sky130_fd_sc_hd__inv_2 cnt_bit_I (
-        .A     (a),
-        .Y     (y));
+	not #(INV_DELAY_NS) (y, a);
 
-endmodule // tt_prim_inv
+endmodule 
 
 
 

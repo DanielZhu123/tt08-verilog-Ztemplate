@@ -17,35 +17,30 @@ module tt_um_ran_DanielZhu (
 
 
 	logic a;
-    logic b;
+    logic [3:0] b;
 
     logic c;
 
-    logic d;
-
-    logic key;
 
 
 
-	wire _unused = &{ena, uio_in,ui_in[7:3],1'b0};
+	wire _unused = &{ena, uio_in,ui_in[7:1],1'b0};
 
 	
 	assign a=ui_in[0];
-    assign b=ui_in[1];
-    assign key=ui_in[2];
 
-	assign uio_out=0;
+    assign b=ui_in[4:1];
+	
+    assign uio_out=0;
 	assign uo_out[0] =c;	
-    assign uo_out[1]=d;	
-    assign uo_out[7:2]=0;	
+
+    assign uo_out[7:1]=0;	
 	assign uio_oe[7:0]=8'b11111111;
 	
-    tt_mult_22 tt_mult_22(
-        .a(a),
-        .b(b),
-        .c(c),
-        .d(d),
-        .key(key));
+    tt_multblock tt_multblock(
+        .pulse(a),
+        .key_4(b),
+        .multblockout(c));
 
 
 
@@ -99,3 +94,65 @@ module tt_mult_22 (
 endmodule 
 
 
+module tt_multblock #(
+	parameter integer mult_len =12)
+	
+	(input wire pulse,
+	input wire [3:0] key_4,
+	output wire multblockout);
+
+	wire [mult_len:0] A;//A B are wire to connect the switch
+	wire [mult_len:0] B;
+	wire [mult_len-1:0] key;
+	logic [1:0]anda;
+	logic andaout;
+	logic [1:0]andb;
+	logic andbout;
+
+	assign A[0]=pulse;
+	assign B[0]=pulse;
+
+	
+	genvar i;
+	generate
+		//4 Oscillator
+		for (i = 0; i < mult_len; i = i + 1) begin
+			tt_mult_22 mult_22(
+				.a (A[i]),
+				.b (B[i]),
+ 				.c(A[i+1]),
+				.d(B[i+1]),
+				.key(key[i]));
+		end
+       
+	endgenerate
+
+    assign key[0]=key_4[0];
+    assign key[1]=key_4[0];
+    assign key[2]=key_4[0];
+    assign key[3]=key_4[1];
+    assign key[4]=key_4[1];
+    assign key[5]=key_4[1];
+    assign key[6]=key_4[2];
+    assign key[7]=key_4[2];
+    assign key[8]=key_4[2];
+    assign key[9]=key_4[3];
+    assign key[10]=key_4[3];
+    assign key[11]=key_4[3];
+	assign anda[0]=A[12];
+	assign andb[0]=B[12];
+	assign anda[1]=andbout;
+	assign andb[1]=andaout;
+	assign multblockout=andaout;
+
+        
+	always_comb begin
+        andaout=~(anda[0]&anda[1]);
+        andbout=~(andb[0]&andb[1]);
+	end
+
+
+	
+	
+       
+endmodule 

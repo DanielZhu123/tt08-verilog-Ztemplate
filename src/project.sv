@@ -21,12 +21,16 @@ module tt_um_ran_DanielZhu (
 
     logic ranprocessout;
 
+    logic ran16out;
+
+    logic ranbitstring;
+
 
 	wire _unused = &{ena, uio_in,ui_in[7:1],1'b0};
 	assign uio_out=0;
 	assign uo_out[7:1] =0;
 	assign startring=ui_in[0];
-	assign uo_out[0]=ranprocessout;	
+	assign uo_out[0]=ranbitstring;	
 	assign uio_oe[7:0]=8'b11111111;
 	
 
@@ -42,6 +46,13 @@ module tt_um_ran_DanielZhu (
         .num(inverterringout),
 		.ranprocessout(ranprocessout));
 
+	tt_16bitran tt_16bitran(
+		.clk(clk),
+		.rst_n(rst_n),
+        .ran16out(ran16out));
+
+	always@(*)
+		ranbitstring = ran16out^ranprocessout;
 endmodule 
 
 
@@ -251,3 +262,44 @@ module tt_process (
             bitsend=bitaft13n;//choose the one coming out of 13n
 	end
 endmodule
+
+module tt_16bitran #(
+	parameter integer count = 16)
+	(input wire clk,
+    input wire rst_n,
+	output wire ran16out);
+
+	logic [count:0] connection;//connect all filpflop
+    assign ran16out =connection[0];
+
+
+	always@(posedge clk or negedge rst_n)begin//pass down bit each clk 
+		if (rst_n==0) begin
+			connection[16]<=connection[15];
+			connection[15]<=connection[14];
+			connection[14]<=connection[13];
+			connection[13]<=connection[12];
+			connection[12]<=connection[11];
+			connection[11]<=connection[10];
+			connection[10]<=connection[9];
+			connection[9]<=connection[8];
+			connection[8]<=connection[7];
+			connection[7]<=connection[6];
+			connection[6]<=connection[5];
+			connection[5]<=connection[4];		
+			connection[4]<=connection[3];
+			connection[3]<=connection[2];
+			connection[2]<=connection[1];
+			connection[1]<=connection[0];
+			connection[0]<=connection[4]^^connection[13]^^connection[15]^^connection[16];
+		end
+		else begin
+			connection[16:1]<=16'b1;
+		end
+	end
+
+
+
+
+	
+endmodule 

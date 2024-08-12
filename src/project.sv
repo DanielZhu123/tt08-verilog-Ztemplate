@@ -36,7 +36,7 @@ module tt_um_ran_DanielZhu (
 
 
 
-	wire _unused = &{ena, uio_in,ui_in[7:2],1'b0};
+	wire _unused = &{ena, uio_in,ui_in[7:4],1'b0};
 
 	assign uo_out[7] =0;	
     assign uo_out[6:0]=displaypin[6:0];	

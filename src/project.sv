@@ -98,7 +98,7 @@ module nand_gate (
     input wire B,
     output wire out);
 
-    sky130_fd_sc_hd__nand2 cell_nand (
+    sky130_fd_sc_hd__nand2_1 cell_nand (
         .A(A),
         .B(B),
         .Y(out));

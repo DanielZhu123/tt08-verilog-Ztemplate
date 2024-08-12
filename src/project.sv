@@ -388,7 +388,7 @@ module tt_mult(
 		    .S      (sel),
 	    	.A0    (A),
 	    	.A1     (B),
-	    	.X      (out),);
+	    	.X      (out));
 endmodule
 
 module tt_mult_22 (
@@ -398,13 +398,13 @@ module tt_mult_22 (
     output wire c,
     output wire d);
 
-    tt_mult mult(
+    tt_mult mult1(
         .A(a),
         .B(b),
         .sel(key),
         .out(c));
 
-    tt_mult mult(
+    tt_mult mult2(
         .A(b),
         .B(a),
         .sel(key),

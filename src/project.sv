@@ -388,7 +388,7 @@ module tt_mult(
 		    .S      (sel),
 	    	.A0    (A),
 	    	.A1     (B),
-	    	.X      (out),);
+	    	.X      (out));
 endmodule
 
 module tt_mult_22 (

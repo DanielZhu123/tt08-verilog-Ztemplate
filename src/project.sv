@@ -30,10 +30,11 @@ module tt_um_ran_DanielZhu (
 
 
 
-	wire _unused = &{ena, uio_in,ui_in[7:1],1'b0};
+	wire _unused = &{ena, uio_in,ui_in[7:2],1'b0};
 	assign uio_out=0;
 	assign uo_out[7:4] =0;
 	assign startring=ui_in[0];
+    assign sample=ui_in[1];
 	assign uo_out[3:0]=samplednum;	
 	assign uio_oe[7:0]=8'b11111111;
 	

@@ -19,14 +19,15 @@ module tt_um_ran_DanielZhu (
 
 	logic startring;
     logic inverterringout;
-	logic ran;
+
+    logic ranprocessout;
 
 
 	wire _unused = &{ena, uio_in,ui_in[7:1],1'b0};
 	assign uio_out=0;
 	assign uo_out[7:1] =0;
 	assign startring=ui_in[0];
-	assign uo_out[0]=inverterringout;	
+	assign uo_out[0]=ranprocessout;	
 	assign uio_oe[7:0]=8'b11111111;
 	
 
@@ -35,7 +36,11 @@ module tt_um_ran_DanielZhu (
 		.startring(startring),
         .inverterringout(inverterringout));
 
-
+	tt_process tt_process(
+		.clk(clk),
+		.rst_n(rst_n),
+        .num(inverterringout),
+		.ranprocessout(ranprocessout));
 
 endmodule 
 
@@ -139,4 +144,95 @@ module tt_invring #(
     always_comb
         rannum= ringoutsam[0]^^ringoutsam[1]^^ringoutsam[2]^^ringoutsam[3];//create random number by xor
        
+endmodule
+
+module tt_13n #(
+	parameter integer count = 13)(
+    input wire clk,
+    input wire rst_n,//set all flipflop to 0
+    input wire num,//bit string to be preccess
+	output wire ran13nout);
+
+	logic [count:0] connection;//all of the wire required in the connection
+	always@(posedge clk or negedge rst_n )begin//pass down bit each clk 
+		if (rst_n==0) begin
+			connection[13:1]<=0;
+		end
+		else begin
+			connection[13]<=connection[12];
+			connection[12]<=connection[11];
+			connection[11]<=connection[10];
+			connection[10]<=connection[9];
+			connection[9]<=connection[8];
+			connection[8]<=connection[7];
+			connection[7]<=connection[6];
+			connection[6]<=connection[5];
+			connection[5]<=connection[4];		
+			connection[4]<=connection[3];
+			connection[3]<=connection[2];
+			connection[2]<=connection[1];
+			connection[1]<=connection[0];
+	   		connection[0]<=num;
+		end
+
+	end
+        
+		
+                
+	assign ran13nout = connection[1]^^connection[2]^^connection[3]^^connection[4]^^
+			connection[5]^^connection[6]^^connection[7]^^connection[8]^^connection[9]^^
+			connection[10]^^connection[11]^^connection[12]^^connection[13];
+
+endmodule 
+
+module tt_process (
+    input wire clk,
+    input wire rst_n,
+    input wire num,
+	output wire ranprocessout);
+
+
+	logic [2:0] bitsadjacent;
+	logic [1:0] bitsgroup;
+    logic bitsend;
+	logic bitaft13n;
+	logic  Gxor;//xor gate for the grouped number
+	logic clk_half;//half clk frequency
+        
+	assign ranprocessout=bitsend;
+
+	tt_13n tt_13n(
+		.clk(clk),
+		.rst_n(rst_n),
+		.num(bitsadjacent[2]),
+        .ran13nout(bitaft13n));
+
+    always @(posedge clk)begin//prepare for grouping
+		bitsadjacent[0]<=num;
+        bitsadjacent[1]<=bitsadjacent[0];
+		bitsadjacent[2]<=bitsadjacent[1];
+    end
+
+ 
+    always@(posedge clk or posedge rst_n) begin//generate half clk frequency
+  		if (rst_n==1) begin
+  			clk_half <= 0;
+            end
+ 		else
+ 	        clk_half <= ~clk_half;
+		end
+
+	always @(posedge clk_half)begin//every two clk cycle, the prepared number will update in to the second stage
+		bitsgroup[0]<=bitsadjacent[0];
+		bitsgroup[1]<=bitsadjacent[1];
+	end
+
+	always_comb begin
+		Gxor=bitsgroup[0]^bitsgroup[1];
+        if(Gxor==1)begin//the output will choose the first of the grouped number
+            bitsend=bitsgroup[1];
+        end
+        else
+            bitsend=bitaft13n;//choose the one coming out of 13n
+	end
 endmodule

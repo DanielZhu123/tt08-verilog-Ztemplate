@@ -117,9 +117,9 @@ module nand_gate_2 (
     logic out_1;
     logic out_2;
 
-    assign Ak=A_1 ;
+    assign A_1=Ak ;
     assign out_2=B_1 ;
-    assign Bk=B_2;
+    assign B_2=Bk;
     assign out_1=A_2;
 
     assign outt=out_1;

@@ -106,8 +106,8 @@ module nand_gate (
 endmodule
 
 module nand_gate_2 (
-    input wire AA,
-    input wire BB,
+    input wire Ak,
+    input wire Bk,
     output wire outt);
 
     logic A_1;
@@ -117,9 +117,9 @@ module nand_gate_2 (
     logic out_1;
     logic out_2;
 
-    assign AA=A_1 ;
+    assign Ak=A_1 ;
     assign out_2=B_1 ;
-    assign BB=B_2;
+    assign Bk=B_2;
     assign out_1=A_2;
 
     assign outt=out_1;
@@ -184,8 +184,8 @@ module tt_multblock #(
     assign key[11]=key_4[3];
 
     nand_gate_2 nand_gate_2(
-        .AA(A[12]),
-        .BB(B[12]),
+        .Ak(A[12]),
+        .Bk(B[12]),
         .outt(multblockout));
 
 

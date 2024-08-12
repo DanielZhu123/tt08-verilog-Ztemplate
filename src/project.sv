@@ -2,7 +2,7 @@
  * Copyright (c) 2024 Your Name
  * SPDX-License-Identifier: Apache-2.0
  */
-
+`timescale 1ns / 1ps
 `default_nettype none
 
 module tt_um_ran_DanielZhu (
@@ -43,18 +43,15 @@ endmodule
 
 
 
+module tt_inv (
+	input  wire a,
+  	output wire y);
 
-module tt_inv #(
-	parameter real INV_DELAY_NS = 0.07) //single inverter delay 
-	
-	(input  wire a,
-         output wire y);
-
-	not #(INV_DELAY_NS) (y, a);
+  	sky130_fd_sc_hd__inv_2 cnt_bit_I (
+    	.A     (a),
+    	.Y     (y));
 
 endmodule 
-
-
 
 module tt_invring #(
 	parameter integer OSC_LEN_1 = 11,//length of each inverter

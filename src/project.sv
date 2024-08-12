@@ -26,7 +26,7 @@ module tt_um_ran_DanielZhu (
 	assign uio_out=0;
 	assign uo_out[7:1] =0;
 	assign startring=ui_in[0];
-	assign uo_out[0]=ran;	
+	assign uo_out[0]=inverterringout;	
 	assign uio_oe[7:0]=8'b11111111;
 	
 
@@ -35,9 +35,7 @@ module tt_um_ran_DanielZhu (
 		.startring(startring),
         .inverterringout(inverterringout));
 
-	always@(posedge clk)begin
-		ran<=inverterringout;
-	end
+
 
 endmodule 
 

@@ -22,8 +22,9 @@ module tt_um_ran_DanielZhu (
 	logic ran;
 
 
-	wire _unused = &{ena, uio_in,ui_in[7:1], uio_out, uo_out[7:1], 1'b0};
-
+	wire _unused = &{ena, uio_in,ui_in[7:1],1'b0};
+	assign uio_out=0;
+	assign uo_out[7:1] = 0;
 	assign startring=ui_in[0];
 	assign uo_out[0]=ran;	
 	assign uio_oe[7:0]=8'b11111111;

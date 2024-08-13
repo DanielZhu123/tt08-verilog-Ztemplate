@@ -309,7 +309,7 @@ module tt_13n #(
 	logic [count:0] connection;//all of the wire required in the connection
 	always@(posedge clk)begin//pass down bit each clk 
 		if (rst_n==0) begin
-			connection[13:1]=13'b0;
+			connection[13:1]<=13'b0;
 		end
 		else begin
 			connection[13]<=connection[12];
@@ -362,9 +362,9 @@ module tt_process (
 
     always @(posedge clk)begin//prepare for grouping
     if (rst_n==0) begin
-        bitsadjacent[0]=0;
-        bitsadjacent[1]=0;
-		bitsadjacent[2]=0;
+	    bitsadjacent[0]<=0;
+	    bitsadjacent[1]<=0;
+	    bitsadjacent[2]<=0;
     end
 		bitsadjacent[0]<=num;
         bitsadjacent[1]<=bitsadjacent[0];

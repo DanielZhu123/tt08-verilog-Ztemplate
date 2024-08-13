@@ -424,7 +424,7 @@ module tt_16bitran #(
 			connection[3]<=connection[2];
 			connection[2]<=connection[1];
 			connection[1]<=connection[0];
-            connection[0]=connection[4]^^connection[13]^^connection[15]^^connection[16];
+			connection[0]<=connection[4]^^connection[13]^^connection[15]^^connection[16];
 		end
 		else begin
 			connection[16:1]<=16'b1;

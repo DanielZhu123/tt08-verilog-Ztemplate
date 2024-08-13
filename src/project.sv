@@ -2,6 +2,7 @@
  * Copyright (c) 2024 Your Name
  * SPDX-License-Identifier: Apache-2.0
  */
+`timescale 1ns / 1ps
 `default_nettype none
 
 module tt_um_ran_DanielZhu (
@@ -43,7 +44,7 @@ module tt_um_ran_DanielZhu (
 	wire _unused = &{ena, uio_in,ui_in[7:6],1'b0};
 
 	assign uo_out[7] =inverterringout;	
-    assign uo_out[6:0]=displaypin[6:0];	
+    assign uo_out[6:0]=displaypin[6:0];
 	assign startring=ui_in[0];
     assign switch_SL=ui_in[1];
     assign switch_R12=ui_in[2];
@@ -104,7 +105,8 @@ module tt_um_ran_DanielZhu (
 		.pulse(pulse),
 		.switchAB(diplaychoose),
 		.key_4(samplednum),
-		.disppinout(displaypin));
+		.disppinout(displaypin),
+        .rst_n(rst_n));
 
 endmodule 
 
@@ -308,7 +310,7 @@ module tt_13n #(
 	logic [count:0] connection;//all of the wire required in the connection
 	always@(posedge clk)begin//pass down bit each clk 
 		if (rst_n==0) begin
-			connection[13:1]<=0;
+			connection[13:1]=13'b0;
 		end
 		else begin
 			connection[13]<=connection[12];
@@ -361,9 +363,9 @@ module tt_process (
 
     always @(posedge clk)begin//prepare for grouping
     if (rst_n==0) begin
-        bitsadjacent[0]<=0;
-        bitsadjacent[1]<=0;
-		bitsadjacent[2]<=0;
+        bitsadjacent[0]=0;
+        bitsadjacent[1]=0;
+		bitsadjacent[2]=0;
     end
 		bitsadjacent[0]<=num;
         bitsadjacent[1]<=bitsadjacent[0];
@@ -394,6 +396,7 @@ module tt_process (
 	end
 endmodule
 
+
 module tt_16bitran #(
 	parameter integer count = 16)
 	(input wire clk,
@@ -422,18 +425,14 @@ module tt_16bitran #(
 			connection[3]<=connection[2];
 			connection[2]<=connection[1];
 			connection[1]<=connection[0];
-			connection[0]<=connection[4]^^connection[13]^^connection[15]^^connection[16];
 		end
 		else begin
 			connection[16:1]<=16'b1;
 		end
 	end
-
-
-
-
-	
-endmodule 
+	always_comb 
+		connection[0]=connection[4]^^connection[13]^^connection[15]^^connection[16];
+endmodule
 
 
 
@@ -530,6 +529,7 @@ module nand_gate (
         .Y(out));
 
 endmodule
+
 
 module nand_gate_2 (
     input wire Ak,
@@ -676,6 +676,7 @@ module tt_finalprocess (
 	input wire pulse,
     input  wire switchAB,
 	input wire [3:0] key_4,
+	input wire rst_n,
 	output wire [13:0] disppinout);
 
 	logic [3:0] multblockA;
@@ -703,10 +704,16 @@ module tt_finalprocess (
     assign multblockB={multblockout[7],multblockout[6],multblockout[5],multblockout[4]};
 
 	always_comb begin
-        if(switchAB==1)
-			num2=multblockA;
-		else
-			num2=multblockB;
+        if (rst_n==0) begin
+            num2=4'b0000;
+        end
+        else begin
+            if(switchAB==1)
+			    num2=multblockA;
+		    else
+			    num2=multblockB;
+        end
+ 
 	end
 
 	tt_display tt_display(

@@ -430,7 +430,7 @@ module tt_16bitran #(
 		end
 	end
 	always_comb 
-		connection[0]=connection[4]^^connection[13]^^connection[15]^^connection[16];
+		assign connection[0]=connection[4]^^connection[13]^^connection[15]^^connection[16];
 endmodule
 
 

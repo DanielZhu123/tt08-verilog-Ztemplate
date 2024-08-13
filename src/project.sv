@@ -18,6 +18,7 @@ module tt_um_ran_DanielZhu (
 
 	logic startring;
     logic inverterringout;
+    logic switch_SL;
 
     logic ranprocessout;
 
@@ -36,14 +37,15 @@ module tt_um_ran_DanielZhu (
 
 
 
-	wire _unused = &{ena, uio_in,ui_in[7:4],1'b0};
+	wire _unused = &{ena, uio_in,ui_in[7:5],1'b0};
 
 	assign uo_out[7] =inverterringout;	
     assign uo_out[6:0]=displaypin[6:0];	
 	assign startring=ui_in[0];
-    assign sample=ui_in[1];
-    assign pulse=ui_in[2];
-    assign diplaychoose=ui_in[3];
+    assign switch_SL=ui_in[1];
+    assign sample=ui_in[2];
+    assign pulse=ui_in[3];
+    assign diplaychoose=ui_in[4];
 	assign uio_out[7] =ranbitstring;	
     assign uio_out[6:0]=displaypin[13:7];	
 	assign uio_oe[7:0]=8'b11111111;
@@ -51,6 +53,7 @@ module tt_um_ran_DanielZhu (
 
 	tt_invring tt_invring(
         .clk(clk),
+        .switch_SL(switch_SL),
 		.startring(startring),
         .inverterringout(inverterringout),
         .rst_n(rst_n));
@@ -101,10 +104,15 @@ module tt_invring #(
 	parameter integer OSC_LEN_1 = 11,//length of each inverter
     parameter integer OSC_LEN_2 = 19,
     parameter integer OSC_LEN_3 = 23,
-    parameter integer OSC_LEN_4 = 29)
+    parameter integer OSC_LEN_4 = 29,
+    parameter integer OSC_LEN_5 = 37,
+    parameter integer OSC_LEN_6 = 41,
+    parameter integer OSC_LEN_7 = 47,
+    parameter integer OSC_LEN_8 = 51)
 	
 	(input wire clk,
 	input wire rst_n,
+    input wire switch_SL,
 	input wire startring,//rings oscillate,else rings stop oscillate
 	output wire inverterringout);//generate random bit string
 
@@ -112,12 +120,17 @@ module tt_invring #(
 	wire [OSC_LEN_2-1:0] osc_2;
 	wire [OSC_LEN_3-1:0] osc_3;
 	wire [OSC_LEN_4-1:0] osc_4;
+    wire [OSC_LEN_5-1:0] osc_5;
+	wire [OSC_LEN_6-1:0] osc_6;
+	wire [OSC_LEN_7-1:0] osc_7;
+	wire [OSC_LEN_8-1:0] osc_8;
 
-    logic [3:0] ringout;//collect each rings last inverters output
-    logic [3:0] ringoutsam;//after sample
+    logic [7:0] ringout;//collect each rings last inverters output
+    logic [7:0] ringoutsam;//after sample
     logic  rannum;//bit string this system generate
 
-	assign ringout ={osc_4[OSC_LEN_4-1],osc_3[OSC_LEN_3-1],osc_2[OSC_LEN_2-1],osc_1[OSC_LEN_1-1]};
+	assign ringout ={osc_8[OSC_LEN_8-1],osc_7[OSC_LEN_7-1],osc_6[OSC_LEN_6-1],osc_5[OSC_LEN_5-1],
+                    osc_4[OSC_LEN_4-1],osc_3[OSC_LEN_3-1],osc_2[OSC_LEN_2-1],osc_1[OSC_LEN_1-1]};
     assign inverterringout=rannum;
 
 	genvar i;
@@ -175,6 +188,57 @@ module tt_invring #(
 				.y (osc_4[i]));
 		end
 
+        for (i = 0; i < OSC_LEN_5; i = i + 1) begin: ringosc5
+			wire y;
+			if (i == 0)begin:gen_5
+				assign y = startring? osc_5[OSC_LEN_5 - 1]:0;
+			end
+			else begin:gen_55
+				assign y = osc_5[i - 1];
+			end
+			tt_inv inv (
+				.a (y),
+				.y (osc_5[i]));
+		end
+
+		for (i = 0; i < OSC_LEN_6; i = i + 1) begin: ringosc6
+			wire y;
+			if (i == 0)begin:gen_6
+				assign y = startring? osc_6[OSC_LEN_6 - 1]:0;
+			end
+			else begin:gen_66
+				assign y = osc_6[i - 1];
+			end
+			tt_inv inv (
+				.a (y),
+				.y (osc_6[i]));
+		end
+
+		for (i = 0; i < OSC_LEN_7; i = i + 1) begin: ringosc7
+			wire y;
+			if (i == 0)begin:gen_7
+				assign y = startring? osc_7[OSC_LEN_7 - 1]:0;
+			end
+			else begin:gen_77
+				assign y = osc_7[i - 1];
+			end
+			tt_inv inv (
+				.a (y),
+				.y (osc_7[i]));
+		end
+
+		for (i = 0; i < OSC_LEN_8; i = i + 1) begin: ringosc8
+			wire y;
+			if (i == 0)begin:gen_8
+				assign y = startring? osc_8[OSC_LEN_8 - 1]:0;
+			end
+			else begin:gen_88
+				assign y = osc_8[i - 1];
+			end
+			tt_inv inv (
+				.a (y),
+				.y (osc_8[i]));
+		end
 	endgenerate
 
     always @(posedge clk)begin//sample ringout each clk cycle
@@ -183,17 +247,34 @@ module tt_invring #(
 		    ringoutsam[1]<=0;
 		    ringoutsam[2]<=0;
 		    ringoutsam[3]<=0;
+		    ringoutsam[4]<=0;
+		    ringoutsam[5]<=0;
+		    ringoutsam[6]<=0;
+		    ringoutsam[7]<=0;
         end
         else begin
             ringoutsam[0]<=ringout[0];
 		    ringoutsam[1]<=ringout[1];
 		    ringoutsam[2]<=ringout[2];
 		    ringoutsam[3]<=ringout[3]; 
+            ringoutsam[4]<=ringout[4]; 
+            ringoutsam[5]<=ringout[5]; 
+            ringoutsam[6]<=ringout[6]; 
+            ringoutsam[7]<=ringout[7]; 
         end
 
 	end
-    always_comb
-        rannum= ringoutsam[0]^^ringoutsam[1]^^ringoutsam[2]^^ringoutsam[3];//create random number by xor
+    
+    always_comb begin
+        if (switch_SL==0)
+            rannum= ringoutsam[4]^^ringoutsam[5]^^ringoutsam[6]^^ringoutsam[7];//create random number by xor
+        else 
+            rannum= ringoutsam[0]^^ringoutsam[1]^^ringoutsam[2]^^ringoutsam[3]^^
+                    ringoutsam[4]^^ringoutsam[5]^^ringoutsam[6]^^ringoutsam[7];//create random number by xor
+
+        
+    end
+    
        
 endmodule
 

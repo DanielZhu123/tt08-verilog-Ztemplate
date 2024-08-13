@@ -54,20 +54,22 @@ module tt_um_ran_DanielZhu (
     assign uio_out[6:0]=displaypin[13:7];	
 	assign uio_oe[7:0]=8'b11111111;
 	
+    generate
+        tt_invring tt_invring1(
+            .clk(clk),
+            .switch_SL(switch_SL),
+		    .startring(startring),
+            .inverterringout(inverterringout1),
+            .rst_n(rst_n));
 
-	tt_invring tt_invring1(
-        .clk(clk),
-        .switch_SL(switch_SL),
-		.startring(startring),
-        .inverterringout(inverterringout1),
-        .rst_n(rst_n));
+	    tt_invring tt_invring2(
+            .clk(clk),
+            .switch_SL(switch_SL),
+		    .startring(startring),
+            .inverterringout(inverterringout2),
+            .rst_n(rst_n));
+    endgenerate
 
-	tt_invring tt_invring2(
-        .clk(clk),
-        .switch_SL(switch_SL),
-		.startring(startring),
-        .inverterringout(inverterringout2),
-        .rst_n(rst_n));
 
     always_comb begin
         if (switch_R12==0)

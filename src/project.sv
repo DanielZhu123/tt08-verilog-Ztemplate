@@ -18,7 +18,10 @@ module tt_um_ran_DanielZhu (
 
 	logic startring;
     logic inverterringout;
+    logic inverterringout1;
+    logic inverterringout2;
     logic switch_SL;
+    logic switch_R12;
 
     logic ranprocessout;
 
@@ -37,26 +40,41 @@ module tt_um_ran_DanielZhu (
 
 
 
-	wire _unused = &{ena, uio_in,ui_in[7:5],1'b0};
+	wire _unused = &{ena, uio_in,ui_in[7:6],1'b0};
 
 	assign uo_out[7] =inverterringout;	
     assign uo_out[6:0]=displaypin[6:0];	
 	assign startring=ui_in[0];
     assign switch_SL=ui_in[1];
-    assign sample=ui_in[2];
-    assign pulse=ui_in[3];
-    assign diplaychoose=ui_in[4];
+    assign switch_R12=ui_in[2];
+    assign sample=ui_in[3];
+    assign pulse=ui_in[4];
+    assign diplaychoose=ui_in[5];
 	assign uio_out[7] =ranbitstring;	
     assign uio_out[6:0]=displaypin[13:7];	
 	assign uio_oe[7:0]=8'b11111111;
 	
 
-	tt_invring tt_invring(
+	tt_invring tt_invring1(
         .clk(clk),
         .switch_SL(switch_SL),
 		.startring(startring),
-        .inverterringout(inverterringout),
+        .inverterringout(inverterringout1),
         .rst_n(rst_n));
+
+	tt_invring tt_invring2(
+        .clk(clk),
+        .switch_SL(switch_SL),
+		.startring(startring),
+        .inverterringout(inverterringout2),
+        .rst_n(rst_n));
+
+    always_comb begin
+        if (switch_R12==0)
+            inverterringout=inverterringout1;
+        else
+            inverterringout=inverterringout2;
+    end
 
 	tt_process tt_process(
 		.clk(clk),

@@ -403,7 +403,9 @@ module tt_16bitran #(
 	output wire ran16out);
 
 	logic [count:0] connection;//connect all filpflop
-    assign ran16out =connection[0];
+	assign ran16out =connection[16];
+	logic mid;
+	assign connection[0]=mid;
 
 
 	always@(posedge clk)begin//pass down bit each clk 
@@ -424,12 +426,14 @@ module tt_16bitran #(
 			connection[3]<=connection[2];
 			connection[2]<=connection[1];
 			connection[1]<=connection[0];
-			connection[0]<=connection[4]^^connection[13]^^connection[15]^^connection[16];
+			
 		end
 		else begin
 			connection[16:1]<=16'b1;
 		end
 	end
+	always_comb 
+		mid=connection[4]^^connection[13]^^connection[15]^^connection[16];
 
 		
 endmodule

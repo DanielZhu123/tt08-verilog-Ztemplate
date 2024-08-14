@@ -309,7 +309,7 @@ module tt_13n #(
 	logic [count:0] connection;//all of the wire required in the connection
 	always@(posedge clk)begin//pass down bit each clk 
 		if (rst_n==0) begin
-			connection[13:1]<=13'b0;
+			connection[13:0]<=14'b0;
 		end
 		else begin
 			connection[13]<=connection[12];

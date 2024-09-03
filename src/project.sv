@@ -262,8 +262,8 @@ module tt_invring #(
 		end
 	endgenerate
 
-    always @(posedge clk or negedge rst_n)begin//sample ringout each clk cycle
-        if (!rst_n) begin
+    always @(posedge clk)begin//sample ringout each clk cycle
+        if (rst_n==0) begin
             ringoutsam[0]<=0;
 		    ringoutsam[1]<=0;
 		    ringoutsam[2]<=0;
@@ -307,8 +307,8 @@ module tt_13n #(
 	output wire ran13nout);
 
 	logic [count:0] connection;//all of the wire required in the connection
-	always@(posedge clk or negedge rst_n)begin//pass down bit each clk 
-		if (!rst_n) begin
+	always@(posedge clk)begin//pass down bit each clk 
+		if (rst_n==0) begin
 			connection[13:0]<=14'b0;
 		end
 		else begin
@@ -360,8 +360,8 @@ module tt_process (
 		.num(bitsadjacent[2]),
         .ran13nout(bitaft13n));
 
-    always @(posedge clk or negedge rst_n)begin//prepare for grouping
-    if (!rst_n) begin
+    always @(posedge clk)begin//prepare for grouping
+    if (rst_n==0) begin
 	    bitsadjacent[0]<=0;
 	    bitsadjacent[1]<=0;
 	    bitsadjacent[2]<=0;
@@ -372,8 +372,8 @@ module tt_process (
     end
 
  
-    always@(posedge clk or negedge rst_n) begin//generate half clk frequency
-  		if (!rst_n) begin
+    always@(posedge clk) begin//generate half clk frequency
+  		if (rst_n==0) begin
   			clk_half <= 0;
             end
  		else
@@ -407,12 +407,9 @@ module tt_16bitran #(
 	assign ran16out =connection[16];
 
 
-	always@(posedge clk or negedge rst_n)begin//pass down bit each clk 
-		if (!rst_n) begin			
-			connection[16:1]<=16'b1;
-		end
-		else begin
-		    connection[16]<=connection[15];
+	always@(posedge clk)begin//pass down bit each clk 
+		if (rst_n==1) begin
+			connection[16]<=connection[15];
 			connection[15]<=connection[14];
 			connection[14]<=connection[13];
 			connection[13]<=connection[12];
@@ -429,6 +426,9 @@ module tt_16bitran #(
 			connection[2]<=connection[1];
 			connection[1]<=connectbe;
 			
+		end
+		else begin
+			connection[16:1]<=16'b1;
 		end
 	end
 	always_comb 
@@ -454,8 +454,8 @@ module tt_samplekey(
 	assign samplednum=sample_4;
 
 
-    always @(posedge clk or negedge rst_n)begin
-		if (!rst_n) begin
+    always @(posedge clk)begin
+		if (rst_n==0) begin
 			bitsadjacent[0]<=0;
     		bitsadjacent[1]<=0;
 			bitsadjacent[2]<=0;

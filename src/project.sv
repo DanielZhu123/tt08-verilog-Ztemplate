@@ -2,6 +2,7 @@
  * Copyright (c) 2024 Your Name
  * SPDX-License-Identifier: Apache-2.0
  */
+
 `default_nettype none
 
 module tt_um_ran_DanielZhu (
@@ -262,8 +263,8 @@ module tt_invring #(
 		end
 	endgenerate
 
-    always @(posedge clk)begin//sample ringout each clk cycle
-        if (rst_n==0) begin
+    always @(posedge clk or negedge rst_n)begin//sample ringout each clk cycle
+        if (!rst_n) begin
             ringoutsam[0]<=0;
 		    ringoutsam[1]<=0;
 		    ringoutsam[2]<=0;

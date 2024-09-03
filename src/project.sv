@@ -129,7 +129,7 @@ module tt_invring #(
     parameter integer OSC_LEN_5 = 37,
     parameter integer OSC_LEN_6 = 41,
     parameter integer OSC_LEN_7 = 47,
-    parameter integer OSC_LEN_8 = 51)
+    parameter integer OSC_LEN_8 = 53)
 	
 	(input wire clk,
 	input wire rst_n,

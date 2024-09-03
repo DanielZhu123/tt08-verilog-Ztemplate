@@ -360,20 +360,23 @@ module tt_process (
 		.num(bitsadjacent[2]),
         .ran13nout(bitaft13n));
 
-    always @(posedge clk)begin//prepare for grouping
+    always @(posedge clk or negedge rst_n)begin//prepare for grouping
 	    if (!rst_n) begin
-	    bitsadjacent[0]<=0;
-	    bitsadjacent[1]<=0;
-	    bitsadjacent[2]<=0;
-    end
-		bitsadjacent[0]<=num;
-        bitsadjacent[1]<=bitsadjacent[0];
-		bitsadjacent[2]<=bitsadjacent[1];
+	    	bitsadjacent[0]<=0;
+	   		bitsadjacent[1]<=0;
+	    	bitsadjacent[2]<=0;
+    	end
+		else begin
+			bitsadjacent[0]<=num;
+            bitsadjacent[1]<=bitsadjacent[0];
+		    bitsadjacent[2]<=bitsadjacent[1];
+		end
+		
     end
 
  
-    always@(posedge clk) begin//generate half clk frequency
-  		if (rst_n==0) begin
+    always@(posedge clk or negedge rst_n) begin//generate half clk frequency
+  		if (!rst_n) begin
   			clk_half <= 0;
             end
  		else

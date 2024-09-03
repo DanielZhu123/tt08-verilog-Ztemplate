@@ -360,7 +360,7 @@ module tt_process (
 		.num(bitsadjacent[2]),
         .ran13nout(bitaft13n));
 
-    always @(posedge clk or negedge rst_n)begin//prepare for grouping
+    always @(posedge clk)begin//prepare for grouping
 	    if (!rst_n) begin
 	    bitsadjacent[0]<=0;
 	    bitsadjacent[1]<=0;

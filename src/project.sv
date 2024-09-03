@@ -262,8 +262,8 @@ module tt_invring #(
 		end
 	endgenerate
 
-    always @(posedge clk)begin//sample ringout each clk cycle
-        if (rst_n==0) begin
+	always @(posedge clk or negedge rst_n)begin//sample ringout each clk cycle
+		if (!rst_n) begin
             ringoutsam[0]<=0;
 		    ringoutsam[1]<=0;
 		    ringoutsam[2]<=0;
@@ -307,8 +307,8 @@ module tt_13n #(
 	output wire ran13nout);
 
 	logic [count:0] connection;//all of the wire required in the connection
-	always@(posedge clk)begin//pass down bit each clk 
-		if (rst_n==0) begin
+	always@(posedge clk  or negedge rst_n)begin//pass down bit each clk 
+		if (!rst_n) begin
 			connection[13:0]<=14'b0;
 		end
 		else begin
@@ -360,8 +360,8 @@ module tt_process (
 		.num(bitsadjacent[2]),
         .ran13nout(bitaft13n));
 
-    always @(posedge clk)begin//prepare for grouping
-    if (rst_n==0) begin
+	always @(posedge clk  or negedge rst_n)begin//prepare for grouping
+		if (!rst_n) begin
 	    bitsadjacent[0]<=0;
 	    bitsadjacent[1]<=0;
 	    bitsadjacent[2]<=0;
@@ -372,8 +372,8 @@ module tt_process (
     end
 
  
-    always@(posedge clk) begin//generate half clk frequency
-  		if (rst_n==0) begin
+    always@(posedge clk or negedge rst_n) begin//generate half clk frequency
+	    if (!rst_n) begin
   			clk_half <= 0;
             end
  		else

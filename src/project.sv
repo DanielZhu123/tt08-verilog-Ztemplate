@@ -410,8 +410,11 @@ module tt_16bitran #(
 	assign ran16out =connection[16];
 
 
-	always@(posedge clk)begin//pass down bit each clk 
-		if (rst_n==1) begin
+	always@(posedge clk or negedge rst_n)begin//pass down bit each clk 
+		if (!rst_n) begin			
+			connection[16:1]<=16'b1;
+		end
+		else begin
 			connection[16]<=connection[15];
 			connection[15]<=connection[14];
 			connection[14]<=connection[13];
@@ -428,10 +431,6 @@ module tt_16bitran #(
 			connection[3]<=connection[2];
 			connection[2]<=connection[1];
 			connection[1]<=connectbe;
-			
-		end
-		else begin
-			connection[16:1]<=16'b1;
 		end
 	end
 	always_comb 
@@ -457,8 +456,8 @@ module tt_samplekey(
 	assign samplednum=sample_4;
 
 
-    always @(posedge clk)begin
-		if (rst_n==0) begin
+    always @(posedge clk or negedge rst_n)begin
+		if (!rst_n) begin
 			bitsadjacent[0]<=0;
     		bitsadjacent[1]<=0;
 			bitsadjacent[2]<=0;
